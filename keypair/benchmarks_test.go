@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func BenchmarkFromAddress_newFromAddress(b *testing.B) {
+func BenchmarkFromAddress_ParseAddress(b *testing.B) {
 	// Secret key for setting up the components.
 	sk := keypair.MustRandom()
 	address := sk.Address()
@@ -59,7 +59,7 @@ func BenchmarkFromAddress_Verify(b *testing.B) {
 	}
 }
 
-func BenchmarkFull_newFull(b *testing.B) {
+func BenchmarkFull_ParseFull(b *testing.B) {
 	// Secret key for setting up the components.
 	sk := keypair.MustRandom()
 	address := sk.Address()
@@ -67,6 +67,17 @@ func BenchmarkFull_newFull(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_, _ = keypair.ParseFull(address)
+	}
+}
+
+func BenchmarkFull_FromRawSeed(b *testing.B) {
+	rawSeed := [32]byte{}
+	_, err := rand.Read(rawSeed[:])
+	require.NoError(b, err)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _ = keypair.FromRawSeed(rawSeed)
 	}
 }
 
