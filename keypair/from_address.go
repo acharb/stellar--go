@@ -3,7 +3,6 @@ package keypair
 import (
 	"crypto/ed25519"
 	"encoding"
-	"sync"
 
 	"github.com/stellar/go/strkey"
 	"github.com/stellar/go/xdr"
@@ -18,15 +17,28 @@ import (
 type FromAddress struct {
 	address string
 
-	// cacheOnce synchronizes the first call to publicKeys() and ensures
-	// concurrent calls to any function that calls publicKeys() do not read or
-	// write the cached fields while they are being written for the first time.
-	cacheOnce sync.Once
+	// publicKey is the ed25519 public key derived from the address. It must be
+	// set during construction of the value.
+	publicKey ed25519.PublicKey
+}
 
-	// cachedPublicKey is a cached copy of the ed25519 public key after first
-	// call to publicKey(). Code should never access this field. Call
-	// publicKey() instead.
-	cachedPublicKey ed25519.PublicKey
+func newFromAddress(address string) (*FromAddress, error) {
+	payload, err := strkey.Decode(strkey.VersionByteAccountID, address)
+	if err != nil {
+		return nil, err
+	}
+	pub := ed25519.PublicKey(payload)
+	return &FromAddress{
+		address:   address,
+		publicKey: pub,
+	}, nil
+}
+
+func newFromAddressWithPublicKey(address string, publicKey ed25519.PublicKey) *FromAddress {
+	return &FromAddress{
+		address:   address,
+		publicKey: publicKey,
+	}
 }
 
 func (kp *FromAddress) Address() string {
@@ -40,7 +52,7 @@ func (kp *FromAddress) FromAddress() *FromAddress {
 }
 
 func (kp *FromAddress) Hint() (r [4]byte) {
-	copy(r[:], kp.publicKey()[28:])
+	copy(r[:], kp.publicKey[28:])
 	return
 }
 
@@ -48,7 +60,7 @@ func (kp *FromAddress) Verify(input []byte, sig []byte) error {
 	if len(sig) != 64 {
 		return ErrInvalidSignature
 	}
-	if !ed25519.Verify(kp.publicKey(), input, sig) {
+	if !ed25519.Verify(kp.publicKey, input, sig) {
 		return ErrInvalidSignature
 	}
 	return nil
@@ -74,13 +86,6 @@ func (kp *FromAddress) Equal(a *FromAddress) bool {
 		return false
 	}
 	return kp.address == a.address
-}
-
-func (kp *FromAddress) publicKey() ed25519.PublicKey {
-	kp.cacheOnce.Do(func() {
-		kp.cachedPublicKey = ed25519.PublicKey(strkey.MustDecode(strkey.VersionByteAccountID, kp.address))
-	})
-	return kp.cachedPublicKey
 }
 
 var (

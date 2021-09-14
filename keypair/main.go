@@ -94,33 +94,18 @@ func Parse(addressOrSeed string) (KP, error) {
 // ParseAddress constructs a new FromAddress keypair from the provided string,
 // which should be an address.
 func ParseAddress(address string) (*FromAddress, error) {
-	_, err := strkey.Decode(strkey.VersionByteAccountID, address)
-	if err != nil {
-		return nil, err
-	}
-
-	return &FromAddress{address: address}, nil
+	return newFromAddress(address)
 }
 
 // ParseFull constructs a new Full keypair from the provided string, which should
 // be a seed.
 func ParseFull(seed string) (*Full, error) {
-	_, err := strkey.Decode(strkey.VersionByteSeed, seed)
-	if err != nil {
-		return nil, err
-	}
-
-	return &Full{seed: seed}, nil
+	return newFull(seed)
 }
 
 // FromRawSeed creates a new keypair from the provided raw ED25519 seed
 func FromRawSeed(rawSeed [32]byte) (*Full, error) {
-	seed, err := strkey.Encode(strkey.VersionByteSeed, rawSeed[:])
-	if err != nil {
-		return nil, err
-	}
-
-	return &Full{seed: seed}, nil
+	return newFullFromRawSeed(rawSeed)
 }
 
 // MustParse is the panic-on-fail version of Parse
