@@ -15,10 +15,7 @@ import (
 // Some operations will panic otherwise. It's recommended that you create these
 // structs through the Parse() method.
 type FromAddress struct {
-	address string
-
-	// publicKey is the ed25519 public key derived from the address. It must be
-	// set during construction of the value.
+	address   string
 	publicKey ed25519.PublicKey
 }
 

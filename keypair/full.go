@@ -10,14 +10,9 @@ import (
 )
 
 type Full struct {
-	seed string
-
-	// publicKey is the ed25519 public key derived from the seed. It must be set
-	// during construction of the value.
-	publicKey ed25519.PublicKey
-
-	// privateKey is the ed25519 private key derived from the seed. It must be
-	// set during construction of the value.
+	address    string
+	seed       string
+	publicKey  ed25519.PublicKey
 	privateKey ed25519.PrivateKey
 }
 
@@ -31,7 +26,12 @@ func newFull(seed string) (*Full, error) {
 	if err != nil {
 		panic(err)
 	}
+	address, err := strkey.Encode(strkey.VersionByteAccountID, pub)
+	if err != nil {
+		return nil, err
+	}
 	return &Full{
+		address:    address,
 		seed:       seed,
 		publicKey:  pub,
 		privateKey: priv,
@@ -48,7 +48,12 @@ func newFullFromRawSeed(rawSeed [32]byte) (*Full, error) {
 	if err != nil {
 		panic(err)
 	}
+	address, err := strkey.Encode(strkey.VersionByteAccountID, pub)
+	if err != nil {
+		return nil, err
+	}
 	return &Full{
+		address:    address,
 		seed:       seed,
 		publicKey:  pub,
 		privateKey: priv,
@@ -56,13 +61,13 @@ func newFullFromRawSeed(rawSeed [32]byte) (*Full, error) {
 }
 
 func (kp *Full) Address() string {
-	return strkey.MustEncode(strkey.VersionByteAccountID, kp.publicKey[:])
+	return kp.address
 }
 
 // FromAddress gets the address-only representation, or public key, of this
 // Full keypair.
 func (kp *Full) FromAddress() *FromAddress {
-	return newFromAddressWithPublicKey(kp.Address(), kp.publicKey)
+	return newFromAddressWithPublicKey(kp.address, kp.publicKey)
 }
 
 func (kp *Full) Hint() (r [4]byte) {
