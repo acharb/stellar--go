@@ -16,6 +16,11 @@ import (
 // structs through the Parse() method.
 type FromAddress struct {
 	address string
+
+	// cachedPublicKey is a cached copy of the ed25519 public key after first
+	// call to publicKey(). Code should never access this field. Call
+	// publicKey() instead.
+	cachedPublicKey ed25519.PublicKey
 }
 
 func (kp *FromAddress) Address() string {
@@ -66,7 +71,10 @@ func (kp *FromAddress) Equal(a *FromAddress) bool {
 }
 
 func (kp *FromAddress) publicKey() ed25519.PublicKey {
-	return ed25519.PublicKey(strkey.MustDecode(strkey.VersionByteAccountID, kp.address))
+	if kp.cachedPublicKey == nil {
+		kp.cachedPublicKey = ed25519.PublicKey(strkey.MustDecode(strkey.VersionByteAccountID, kp.address))
+	}
+	return kp.cachedPublicKey
 }
 
 var (

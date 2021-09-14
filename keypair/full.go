@@ -11,6 +11,14 @@ import (
 
 type Full struct {
 	seed string
+
+	// cachedPublicKey is a cached copy of the ed25519 public key after first
+	// call to keys(). Code should never access this field, call keys() instead.
+	cachedPublicKey ed25519.PublicKey
+
+	// cachedPrivateKey is a cached copy of the ed25519 private key after first
+	// call to keys(). Code should never access this field, call keys() instead.
+	cachedPrivateKey ed25519.PrivateKey
 }
 
 func (kp *Full) Address() string {
@@ -85,12 +93,16 @@ func (kp *Full) publicKey() ed25519.PublicKey {
 }
 
 func (kp *Full) keys() (ed25519.PublicKey, ed25519.PrivateKey) {
-	reader := bytes.NewReader(kp.rawSeed())
-	pub, priv, err := ed25519.GenerateKey(reader)
-	if err != nil {
-		panic(err)
+	if kp.cachedPublicKey == nil || kp.cachedPrivateKey == nil {
+		reader := bytes.NewReader(kp.rawSeed())
+		pub, priv, err := ed25519.GenerateKey(reader)
+		if err != nil {
+			panic(err)
+		}
+		kp.cachedPublicKey = pub
+		kp.cachedPrivateKey = priv
 	}
-	return pub, priv
+	return kp.cachedPublicKey, kp.cachedPrivateKey
 }
 
 func (kp *Full) rawSeed() []byte {

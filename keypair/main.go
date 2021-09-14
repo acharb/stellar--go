@@ -52,7 +52,6 @@ func Random() (*Full, error) {
 	}
 
 	kp, err := FromRawSeed(rawSeed)
-
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +68,6 @@ func Master(networkPassphrase string) KP {
 // Root returns the root account keypair for a given network passphrase.
 func Root(networkPassphrase string) *Full {
 	kp, err := FromRawSeed(network.ID(networkPassphrase))
-
 	if err != nil {
 		panic(err)
 	}
@@ -112,7 +110,7 @@ func ParseFull(seed string) (*Full, error) {
 		return nil, err
 	}
 
-	return &Full{seed}, nil
+	return &Full{seed: seed}, nil
 }
 
 // FromRawSeed creates a new keypair from the provided raw ED25519 seed
@@ -122,7 +120,7 @@ func FromRawSeed(rawSeed [32]byte) (*Full, error) {
 		return nil, err
 	}
 
-	return &Full{seed}, nil
+	return &Full{seed: seed}, nil
 }
 
 // MustParse is the panic-on-fail version of Parse
