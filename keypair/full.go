@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/ed25519"
 	"encoding/base64"
+	"sync"
 
 	"github.com/stellar/go/strkey"
 	"github.com/stellar/go/xdr"
@@ -11,6 +12,11 @@ import (
 
 type Full struct {
 	seed string
+
+	// cacheOnce synchronizes the first call to keys() and ensures concurrent
+	// calls to any function that calls keys() do not read or write the cached
+	// fields while they are being written for the first time.
+	cacheOnce sync.Once
 
 	// cachedPublicKey is a cached copy of the ed25519 public key after first
 	// call to keys(). Code should never access this field, call keys() instead.
@@ -93,7 +99,7 @@ func (kp *Full) publicKey() ed25519.PublicKey {
 }
 
 func (kp *Full) keys() (ed25519.PublicKey, ed25519.PrivateKey) {
-	if kp.cachedPublicKey == nil || kp.cachedPrivateKey == nil {
+	kp.cacheOnce.Do(func() {
 		reader := bytes.NewReader(kp.rawSeed())
 		pub, priv, err := ed25519.GenerateKey(reader)
 		if err != nil {
@@ -101,7 +107,7 @@ func (kp *Full) keys() (ed25519.PublicKey, ed25519.PrivateKey) {
 		}
 		kp.cachedPublicKey = pub
 		kp.cachedPrivateKey = priv
-	}
+	})
 	return kp.cachedPublicKey, kp.cachedPrivateKey
 }
 

@@ -3,6 +3,7 @@ package keypair
 import (
 	"crypto/ed25519"
 	"encoding"
+	"sync"
 
 	"github.com/stellar/go/strkey"
 	"github.com/stellar/go/xdr"
@@ -16,6 +17,11 @@ import (
 // structs through the Parse() method.
 type FromAddress struct {
 	address string
+
+	// cacheOnce synchronizes the first call to publicKeys() and ensures
+	// concurrent calls to any function that calls publicKeys() do not read or
+	// write the cached fields while they are being written for the first time.
+	cacheOnce sync.Once
 
 	// cachedPublicKey is a cached copy of the ed25519 public key after first
 	// call to publicKey(). Code should never access this field. Call
@@ -71,9 +77,9 @@ func (kp *FromAddress) Equal(a *FromAddress) bool {
 }
 
 func (kp *FromAddress) publicKey() ed25519.PublicKey {
-	if kp.cachedPublicKey == nil {
+	kp.cacheOnce.Do(func() {
 		kp.cachedPublicKey = ed25519.PublicKey(strkey.MustDecode(strkey.VersionByteAccountID, kp.address))
-	}
+	})
 	return kp.cachedPublicKey
 }
 
