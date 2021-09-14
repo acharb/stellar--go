@@ -24,7 +24,7 @@ func newFull(seed string) (*Full, error) {
 	reader := bytes.NewReader(rawSeed)
 	pub, priv, err := ed25519.GenerateKey(reader)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	address, err := strkey.Encode(strkey.VersionByteAccountID, pub)
 	if err != nil {
@@ -46,7 +46,7 @@ func newFullFromRawSeed(rawSeed [32]byte) (*Full, error) {
 	reader := bytes.NewReader(rawSeed[:])
 	pub, priv, err := ed25519.GenerateKey(reader)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	address, err := strkey.Encode(strkey.VersionByteAccountID, pub)
 	if err != nil {
