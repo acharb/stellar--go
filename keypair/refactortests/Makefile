@@ -1,5 +1,5 @@
 test: go-master
-	go test -tags=refactortests
+	CGO_ENABLED=1 go test -race -tags=refactortests
 
 go-master:
 	git clone --depth=1 https://github.com/stellar/go go-master

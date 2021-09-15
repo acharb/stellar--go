@@ -36,10 +36,20 @@ func TestRefactorOfKeypairIsConsistent(t *testing.T) {
 				want := keypairmaster.MustParseAddress(address)
 				got := keypair.MustParseAddress(address)
 				t.Run("EqualFromAddress(want, got)", func(t *testing.T) {
-					EqualFromAddress(t, sk, want, got)
+					t.Parallel()
+					for i := 0; i < 10; i++ {
+						t.Run(strconv.Itoa(i), func(t *testing.T) {
+							EqualFromAddress(t, sk, want, got)
+						})
+					}
 				})
 				t.Run("EqualFromAddress(want.FromAddress(), got.FromAddress())", func(t *testing.T) {
-					EqualFromAddress(t, sk, want.FromAddress(), got.FromAddress())
+					t.Parallel()
+					for i := 0; i < 10; i++ {
+						t.Run(strconv.Itoa(i), func(t *testing.T) {
+							EqualFromAddress(t, sk, want.FromAddress(), got.FromAddress())
+						})
+					}
 				})
 			}
 
@@ -48,10 +58,20 @@ func TestRefactorOfKeypairIsConsistent(t *testing.T) {
 				want := keypairmaster.MustParseFull(seed)
 				got := keypair.MustParseFull(seed)
 				t.Run("EqualFull(want, got)", func(t *testing.T) {
-					EqualFull(t, want, got)
+					t.Parallel()
+					for i := 0; i < 10; i++ {
+						t.Run(strconv.Itoa(i), func(t *testing.T) {
+							EqualFull(t, want, got)
+						})
+					}
 				})
 				t.Run("EqualFromAddress(want.FromAddress(), got.FromAddress())", func(t *testing.T) {
-					EqualFromAddress(t, sk, want.FromAddress(), got.FromAddress())
+					t.Parallel()
+					for i := 0; i < 10; i++ {
+						t.Run(strconv.Itoa(i), func(t *testing.T) {
+							EqualFromAddress(t, sk, want.FromAddress(), got.FromAddress())
+						})
+					}
 				})
 			}
 		})
