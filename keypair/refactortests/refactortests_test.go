@@ -1,4 +1,5 @@
 //go:build refactortests
+// +build refactortests
 
 package refactortests
 
