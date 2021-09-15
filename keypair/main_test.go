@@ -1,6 +1,7 @@
 package keypair
 
 import (
+	"crypto/ed25519"
 	"crypto/rand"
 	"errors"
 	"io"
@@ -10,7 +11,6 @@ import (
 	. "github.com/onsi/ginkgo/extensions/table"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/types"
-	"golang.org/x/crypto/ed25519"
 )
 
 func TestBuild(t *testing.T) {
