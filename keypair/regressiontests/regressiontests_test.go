@@ -1,5 +1,5 @@
-//go:build refactortests
-// +build refactortests
+//go:build regressiontests
+// +build regressiontests
 
 package refactortests
 

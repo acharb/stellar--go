@@ -21,6 +21,7 @@ require (
 	github.com/gobuffalo/packr v1.12.1 // indirect
 	github.com/golang-jwt/jwt v3.2.1+incompatible
 	github.com/google/go-querystring v0.0.0-20160401233042-9235644dd9e5 // indirect
+	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.2.0
 	github.com/gorilla/schema v1.1.0
 	github.com/graph-gophers/graphql-go v0.0.0-20190225005345-3e8838d4614c
@@ -60,6 +61,7 @@ require (
 	github.com/spf13/jwalterweatherman v0.0.0-20141219030609-3d60171a6431 // indirect
 	github.com/spf13/pflag v0.0.0-20161005214240-4bd69631f475
 	github.com/spf13/viper v0.0.0-20150621231900-db7ff930a189
+	github.com/stellar/go-master v0.0.0-00010101000000-000000000000
 	github.com/stellar/go-xdr v0.0.0-20201028102745-f80a23dac78a
 	github.com/stellar/throttled v2.2.3-0.20190823235211-89d75816f59d+incompatible
 	github.com/stretchr/testify v1.6.1
@@ -83,3 +85,5 @@ require (
 	gopkg.in/square/go-jose.v2 v2.4.1
 	gopkg.in/tylerb/graceful.v1 v1.2.13
 )
+
+replace github.com/stellar/go-master => ./keypair/regressiontests/go-master
