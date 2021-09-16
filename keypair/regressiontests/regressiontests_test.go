@@ -19,7 +19,7 @@ const inputSize = 32
 
 func TestRefactorOfKeypairIsConsistent(t *testing.T) {
 	f := fuzz.New()
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 1000; i++ {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			// Generate a valid address and seed to use as inputs to tests.
 			rawSeed := [32]byte{}

@@ -1,5 +1,5 @@
 test: go-master
-	CGO_ENABLED=1 go test -race -tags=regressiontests
+	CGO_ENABLED=1 go test -race -tags=regressiontests -timeout 20m
 
 go-master:
 	git clone --depth=1 https://github.com/stellar/go go-master
