@@ -1,7 +1,7 @@
 BENCHTIME?=1s
 
 bench:
-	rm *.prof *.test
+	rm -f *.prof *.test
 	git stash --all
 	git checkout master
 	git checkout - -- benchmarks_test.go
