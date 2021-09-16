@@ -64,7 +64,8 @@ require (
 	github.com/stellar/go-master v0.0.0-00010101000000-000000000000
 	github.com/stellar/go-xdr v0.0.0-20201028102745-f80a23dac78a
 	github.com/stellar/throttled v2.2.3-0.20190823235211-89d75816f59d+incompatible
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/objx v0.3.0 // indirect
+	github.com/stretchr/testify v1.7.0
 	github.com/tyler-smith/go-bip39 v0.0.0-20180618194314-52158e4697b8
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v0.0.0-20170109085056-0a7f0a797cd6 // indirect
@@ -84,6 +85,7 @@ require (
 	gopkg.in/gorp.v1 v1.7.1 // indirect
 	gopkg.in/square/go-jose.v2 v2.4.1
 	gopkg.in/tylerb/graceful.v1 v1.2.13
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
 replace github.com/stellar/go-master => ./keypair/regressiontests/go-master
